@@ -1,0 +1,7 @@
+{
+  "name": "flywheel",
+  "owner": { "name": "chenyu" },
+  "plugins": [
+    { "name": "flywheel-analytics", "source": "./", "description": "Flywheel 大盘数据分析插件：受治理 MCP + 方法论 Skill" }
+  ]
+}

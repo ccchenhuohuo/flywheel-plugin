@@ -1,0 +1,9 @@
+{
+  "flywheel": {
+    "type": "http",
+    "url": "https://voc.ulanzi.com:28081/flywheel/mcp",
+    "headers": {
+      "Authorization": "Bearer ${FLYWHEEL_MCP_TOKEN}"
+    }
+  }
+}
