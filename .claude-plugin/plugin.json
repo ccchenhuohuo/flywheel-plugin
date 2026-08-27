@@ -1,6 +1,6 @@
 {
   "name": "flywheel-analytics",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Flywheel 大盘数据分析插件（战略组）：受治理只读 MCP（12 工具，HTTP）+ 分析方法论 Skill。估算口径、月度、复现戳、单 SKU 轨迹、单品牌多月序列。",
   "author": {
     "name": "chenyu"
