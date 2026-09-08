@@ -47,11 +47,12 @@
 <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H3V9h18v9h-3M6 15h12v6H6zM17 12h1"/></symbol>
 </defs></svg>
 <div class="shell">
-<header class="topbar"><div class="brand"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-scan"/></svg></span>治理战略组 <span class="muted">/</span> 验收方法手册</div><div class="top-right"><span class="version">方法 2.1 · 2026.09.08</span><button class="print-button" id="print-button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-print"/></svg>打印 / PDF</button></div></header>
+<header class="topbar"><div class="brand"><span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-scan"/></svg></span>治理战略组 <span class="muted">/</span> 验收方法手册</div><div class="top-right"><span class="version">方法 3.0.1 · 2026.09.08</span><button class="print-button" id="print-button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-print"/></svg>打印 / PDF</button></div></header>
 <section class="hero"><div><div class="eyebrow">Monthly acceptance · Field guide</div><h1>大盘数据验收<br><span>从类目结果，追到源数据</span></h1></div><div class="hero-intro"><p>看四项结果，拆量额贡献，优先排查决定大盘表现的部分。<br>点开流程，理解每一步为什么查、怎么判断、发现问题后改哪里。</p><div class="principles"><span class="pill">国家视角 · 淘系统一</span><span class="pill">商品粒度 · SPU</span><span class="pill">全历史 · 独立观察</span></div></div></section>
 <div class="notice"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>结果 → 贡献 → 优先级 → 溯源。</strong> 四项结果一起看；模型按问题选用计算工具和证据。本页是说明，不自动判定验收。</span><button type="button" data-view-link="maintain">查看微调地图 ↗</button></div>
 <nav class="navigation" aria-label="说明章节"><button type="button" class="nav-button" data-view="flow" aria-pressed="true"><span>01</span>完整流程</button><button type="button" class="nav-button" data-view="reason" aria-pressed="false"><span>02</span>怎样判断波动</button><button type="button" class="nav-button" data-view="scope" aria-pressed="false"><span>03</span>类目与商品</button><button type="button" class="nav-button" data-view="maintain" aria-pressed="false"><span>04</span>人工微调</button></nav>
 <main>
+<section class="concept-panel" id="execution-roadmap" style="margin:26px 0"><div class="eyebrow">3.0 · 每次都走同一条可核验路线</div><h2 style="margin:8px 0 15px">先建立全景，再开放调查</h2><p class="small-note">固定扫描确定必查分母，AI 根据证据选择假设与调查深度。候选完整保留，优先级只改变顺序。</p><div class="edit-intro" style="margin-top:20px"><div class="edit-step"><div class="eyebrow">01 冻结 → 02 扫描</div><p><strong>范围、政策、任务预先确定</strong>四国全历史、国家与 L1–L3、自然月环比/同比、四项结果、原始范围与完整键、SPU/品牌抵消。</p><code>run.json → plan.json → evidence</code></div><div class="edit-step"><div class="eyebrow">03 独立候选 → 04 调查</div><p><strong>每个信号有明确去向</strong>固定规则生成全体候选；按影响下钻，记录证据、反证、继续或停止理由。语义抽样与历史重验各自留痕。</p><code>candidates → decisions → findings</code></div><div class="edit-step"><div class="eyebrow">05 核验 → 06 报告与封存</div><p><strong>执行、使用判断、封存分开</strong>缺整类查询、缺页、漏同比或未处置均可见。结论分点与充分证据写在正文，实际轨迹在看板查看。</p><code>validation → 报告 / audit → sealed</code></div></div><p class="small-note" style="margin-top:16px">初始阈值可按复验调整，但须新建运行。有限证据不冒充全量验证；相同指纹不等于事务快照。</p><div class="source-links"><a href="execution-contract.md">执行命令、阶段门槛与记录结构 ↗</a><a href="../policies/default.json">冻结的初始排查政策 ↗</a></div></section>
 <section class="view" id="view-flow" aria-label="完整流程">
 <div class="view-intro"><div><div class="eyebrow">One map, the whole workflow</div><h2>先看四项结果，再找主要原因</h2></div><p>销量与金额都参与异常排序；范围完整性同时守门。<br>点击节点查看细节；在手机上，说明显示在流程图下方。</p></div>
 <div class="result-grid" aria-label="四项核心结果"><div><b>SPU 数量</b><span>商品规模与新增 / 消失</span></div><div><b>SPU 价格带</b><span>价带中的商品数与金额</span></div><div><b>销量</b><span>起量 / 回落与件数贡献</span></div><div><b>销售额</b><span>盘量与增长 / 下跌贡献</span></div></div>
@@ -67,8 +68,8 @@
 <div class="flow-pair"><button type="button" class="flow-node" data-node="decision" aria-pressed="false"><span class="node-top"><span class="node-id">06</span><svg class="icon" aria-hidden="true"><use href="#i-report"/></svg></span><h3>判断与使用影响</h3><span class="node-desc">结论 · 暴露范围 · 未解释项</span></button><span class="horizontal-arrow" aria-hidden="true">→</span><button type="button" class="flow-node" data-node="archive" aria-pressed="false"><span class="node-top"><span class="node-id">07</span><svg class="icon" aria-hidden="true"><use href="#i-archive"/></svg></span><h3>独立归档与微调</h3><span class="node-desc">一篇报告 · 证据归档 · 方法更新</span></button></div>
 <div class="return-line">↶ 证据不足时回到相关节点补查；不为填满流程强行定性</div>
 </div><aside class="detail-panel" id="node-detail" aria-live="polite" aria-atomic="true"></aside></div>
-<div class="section-tail"><b>计算提供证据，模型负责判断。</b><span>全历史覆盖不要求一次巨型查询；工具按问题选用。正常环节一句有依据的话，重点异常讲完整；一篇报告沿排查逻辑展开。</span></div>
-<article class="concept-panel report-contract" id="report-contract" aria-labelledby="report-title" style="margin-top:18px"><div class="eyebrow">验收报告 · 完整路径始终可见</div><h3 id="report-title">只读一篇：结论先行，重点问题讲完整</h3><p class="small-note">开头一段给最重要结论；正文按范围与历史 → 四项结果 → 重点异常追因 → 使用判断展开。默认无表格、无图片，复杂分支按需用文内逻辑树。</p><div class="edit-intro" style="margin-top:18px;margin-bottom:12px"><div class="edit-step"><div class="eyebrow">已查未发现问题</div><p><strong>范围 + 关键结果 + 证据</strong>正常环节用一句有范围、有依据的话写在相应位置；不折叠、不隐藏，不用“其余正常”替代。</p></div><div class="edit-step"><div class="eyebrow">重要异常</div><p><strong>结果 → 贡献 → 源数据</strong>同一处讲清影响、证据与反证、判断和核查/修复方向；可疑变化与已确认错数分开。</p></div><div class="edit-step"><div class="eyebrow">待核或未完成</div><p><strong>缺口 + 原因 + 使用限制</strong>没有数据、没有执行、无需继续检查是不同状态。它们如何限制放行也要可见。</p></div></div><p class="small-note">交付前对照独立观察与证据复核路径、四指标、贡献守恒及推论边界。文件封存只记录哈希，不代表报告完整或业务验收通过。</p><div class="source-links"><a href="report-writing.md">完整报告的写作要求 ↗</a><a href="../assets/report-template.md">可调整的报告骨架 ↗</a></div></article>
+<div class="section-tail"><b>计算提供证据，模型负责判断。</b><span>全历史覆盖不要求一次巨型查询；基础任务固定执行，补充取证按问题选用。正常环节一句有依据的话，重点异常讲完整；一篇报告沿排查逻辑展开。</span></div>
+<article class="concept-panel report-contract" id="report-contract" aria-labelledby="report-title" style="margin-top:18px"><div class="eyebrow">验收报告 · 完整路径始终可见</div><h3 id="report-title">只读一篇：结论先行，重点问题讲完整</h3><p class="small-note">开头 3–5 点给结论与关键证据；正文按范围与历史 → 四项结果 → 重点异常追因 → 使用判断展开。一篇正文自足；执行看板可追溯覆盖、判断与证据。</p><div class="edit-intro" style="margin-top:18px;margin-bottom:12px"><div class="edit-step"><div class="eyebrow">已查未发现问题</div><p><strong>范围 + 关键结果 + 证据</strong>正常环节用一句有范围、有依据的话写在相应位置；不折叠、不隐藏，不用“其余正常”替代。</p></div><div class="edit-step"><div class="eyebrow">重要异常</div><p><strong>结果 → 贡献 → 源数据</strong>同一处讲清影响、证据与反证、判断和核查/修复方向；可疑变化与已确认错数分开。</p></div><div class="edit-step"><div class="eyebrow">待核或未完成</div><p><strong>缺口 + 原因 + 使用限制</strong>没有数据、没有执行、无需继续检查是不同状态。它们如何限制放行也要可见。</p></div></div><p class="small-note">交付前对照独立观察与证据复核路径、四指标、贡献守恒及推论边界。文件封存只记录哈希，不代表报告完整或业务验收通过。</p><div class="source-links"><a href="report-writing.md">完整报告的写作要求 ↗</a><a href="../assets/report-template.md">可调整的报告骨架 ↗</a></div></article>
 <div id="print-nodes" class="print-only"></div>
 </section>
 <section class="view" id="view-reason" aria-label="怎样判断波动" hidden>
@@ -83,7 +84,7 @@
 <section class="view" id="view-scope" aria-label="类目与商品" hidden>
 <div class="view-intro"><div><div class="eyebrow">Define what is being observed</div><h2>商品、类目、范围，各自回答什么</h2></div><p>商品粒度决定噪声大小；类目口径决定看到什么；项目范围决定本来应该采到什么。</p></div>
 <div class="concept-columns"><article class="concept-panel"><h3>01 / 商品层：看 SPU，必要时看规格</h3><p class="small-note">Amazon：product_id / parent_asin；国内：product_id。原始 SKU 细行先校验，再汇总销量与金额。</p><div class="grain-demo"><div class="grain-product"><strong>便携三脚架 A</strong><b>SPU · P-001</b></div><div class="grain-months"><div><div class="month-label">上月 · 2 个规格</div><div class="variant"><span class="swatch black"></span>黑色 / 标准款</div><div class="variant"><span class="swatch silver"></span>银色 / 标准款</div></div><div><div class="month-label">本月 · 2 个规格</div><div class="variant"><span class="swatch black"></span>黑色 / 标准款</div><div class="variant"><span class="swatch red"></span>红色 / 标准款</div></div></div></div><div class="segmented" aria-label="对比分析粒度"><button type="button" data-grain="spu" aria-pressed="true">按 SPU 看 · 主分析</button><button type="button" data-grain="sku" aria-pressed="false">按 SKU 看 · 细查</button></div><div id="grain-result" class="grain-result" aria-live="polite"></div><p class="small-note">示意商品。真实分析还需检查父子归属和商品内容变化；固定 ID 本身不能证明商品从未换过。</p></article>
-<article class="concept-panel"><h3>02 / 类目层：两套口径相互追溯</h3><div class="mapping-box"><div class="eyebrow">供应商采集范围</div><strong>平台原始类目与完整路径</strong><p class="small-note">交接文件重点用于确认：买了哪些平台类目、适用于哪些国家和月份。</p></div><div class="mapping-arrow">↓ 商品 / 子体映射，检查遗漏与重复 ↑</div><div class="mapping-box green"><div class="eyebrow">公司分析口径</div><strong>公司标准类目 std 1 → 2 → 3</strong><p class="small-note">消费视角的主要检查入口；发现波动后回到原始类目与 SPU 定位。</p></div><p class="small-note">同一 SPU 可跨类目：类目内汇总对应子体；不要把父体全部销量重复贴给每个类目。平台完整路径不能只用前三层代替。</p><div class="country-row"><span class="country-chip">中国 = 淘宝 + 天猫</span><span class="country-chip subtle">US / DE / JP / MX / BR 各自观察</span></div><p class="small-note" style="margin-top:10px">采集范围和公司治理范围分别核对；未纳入 std 的国家写“无观察”，不写“无异常”。不同国家的本币金额不直接相加。</p></article></div>
+<article class="concept-panel"><h3>02 / 类目层：两套口径相互追溯</h3><div class="mapping-box"><div class="eyebrow">供应商采集范围</div><strong>平台原始类目与完整路径</strong><p class="small-note">交接文件重点用于确认：买了哪些平台类目、适用于哪些国家和月份。</p></div><div class="mapping-arrow">↓ 商品 / 子体映射，检查遗漏与重复 ↑</div><div class="mapping-box green"><div class="eyebrow">公司分析口径</div><strong>公司标准类目 std 1 → 2 → 3</strong><p class="small-note">消费视角的主要检查入口；发现波动后回到原始类目与 SPU 定位。</p></div><p class="small-note">同一 SPU 可跨类目：类目内汇总对应子体；不要把父体全部销量重复贴给每个类目。平台完整路径不能只用前三层代替。</p><div class="country-row"><span class="country-chip">中国 = 淘宝 + 天猫</span><span class="country-chip subtle">US / DE / JP 各自观察；MX / BR 当前排除</span></div><p class="small-note" style="margin-top:10px">采集范围和公司治理范围分别核对；未纳入 std 的国家写“无观察”，不写“无异常”。不同国家的本币金额不直接相加。</p></article></div>
 <div class="presence-section"><h3>03 / 存在性：没有波动，也可能漏了整个类目</h3><p class="small-note" style="margin-top:7px">点击任一模式查看排查方向。实心表示有观测；空框表示缺少观测，不能直接当作销量为零。</p><div class="presence-layout"><div class="presence-grid"><div class="presence-head"><span></span><span>1 月</span><span>2 月</span><span>3 月</span><span>4 月</span><span>5 月</span><span>6 月</span></div><div id="presence-rows"></div><div class="presence-legend"><span><i class="legend-cell"></i>有观测</span><span><i class="legend-cell empty"></i>无观测</span></div></div><div class="presence-detail" id="presence-detail" aria-live="polite"></div></div><div id="print-presence" class="print-only"></div></div>
 </section>
 <section class="view" id="view-maintain" aria-label="人工微调" hidden>
@@ -91,7 +92,7 @@
 <div class="edit-intro"><div class="edit-step"><div class="eyebrow">01 · 描述偏差</div><p><strong>记录本次现象与证据</strong>误报了什么？漏掉了什么？影响哪个国家、类目、月份和 SPU？</p></div><div class="edit-step"><div class="eyebrow">02 · 找到层次</div><p><strong>把问题放回对应节点</strong>没采到、算错了、解释过头，还是报告没有讲清楚？</p></div><div class="edit-step"><div class="eyebrow">03 · 小改并复验</div><p><strong>更新有效方法，归档旧版本</strong>用原失败案例及一个合理反例验证，避免不断追加例外规则。</p></div></div>
 <div class="maintenance-wrap"><table><thead><tr><th scope="col">人工发现的现象</th><th scope="col">微调什么</th><th scope="col">当前文件位置 / 实现状态</th></tr></thead><tbody id="maintenance-body"></tbody></table></div>
 <div class="archive-guide"><h3>历史隔离：复用方法，重新取得事实</h3><p class="small-note" style="margin-top:8px">每次运行建立唯一编号；数据月不充当运行版本。正文与证据保存在独立运行包内；反馈稿只按用户另行需要生成。</p><div class="archive-track"><div class="archive-stop"><b>有效口径 + 本次数据</b><p>范围、SPU 定义、方法版本<br>开工不默认加载旧报告</p></div><div class="horizontal-arrow" aria-hidden="true">→</div><div class="archive-stop"><b>本次独立观察</b><p>实际查询与范围、发现、限制<br>先形成自己的证据链</p></div><div class="horizontal-arrow" aria-hidden="true">→</div><div class="archive-stop"><b>报告与证据包归档</b><p>同日多次运行也不覆盖<br>结论能追溯到本次证据</p></div></div><div class="archive-history">历史档案 ┄→ 只在独立观察形成后，按具体问题比较。<br>旧问题经本次重验才能写成本次发现；同一会话已有的旧结论不会因换目录而消失。</div></div>
-<details class="human-note"><summary>维护这份说明图</summary><p>这份文件是供人理解的说明，不参与查询或自动验收，也不写入数据库。图与方法 2.1 对齐，执行时以有效方法与本次冻结输入为准。</p><ul><li>流程细节集中在文件内 <code>GUIDE.nodes</code>；示意案例在 <code>GUIDE.scenarios</code>；市场推理过程在 <code>GUIDE.marketFramework</code>，可展开示例在 <code>GUIDE.marketExamples</code>；类目存在模式在 <code>GUIDE.presence</code>；文件索引在 <code>GUIDE.maintenance</code>。</li><li>微调方法后，同步更新相应节点与实现状态；避免把历史数字或一次裁决固化成通用规则。</li><li>图中 8 个 SQL 示例仅承担可复核的计算；按问题选择和改写，不是每次全跑的固定流程。</li><li>本页可以离线打开、按章节浏览，也可打印为 PDF；没有外部脚本、网络请求或分析数据采集。</li></ul></details>
+<details class="human-note"><summary>维护这份说明图</summary><p>这份文件是供人理解的说明，不参与查询或自动验收，也不写入数据库。图与方法 3.0.1 对齐，执行时以有效方法与本次冻结输入为准。</p><ul><li>流程细节集中在文件内 <code>GUIDE.nodes</code>；示意案例在 <code>GUIDE.scenarios</code>；市场推理过程在 <code>GUIDE.marketFramework</code>，可展开示例在 <code>GUIDE.marketExamples</code>；类目存在模式在 <code>GUIDE.presence</code>；文件索引在 <code>GUIDE.maintenance</code>。</li><li>微调方法后，同步更新相应节点与实现状态；避免把历史数字或一次裁决固化成通用规则。</li><li>图中 8 个 SQL 示例仅承担可复核的计算；按问题选择和改写，自动必查任务由执行器生成，例子不替代计划。</li><li>本页可以离线打开、按章节浏览，也可打印为 PDF；没有外部脚本、网络请求或分析数据采集。</li></ul></details>
 </section>
 <noscript><div class="no-js">交互说明需要启用 JavaScript。基础流程仍可阅读；详细方法与当前执行规则请查看同目录的 methodology.md 和上一级 SKILL.md。</div></noscript>
 </main>
@@ -115,7 +116,7 @@ const GUIDE = {
       "output": "输出本次观察边界。过去报告和旧数字先留在档案，形成独立观察后再按问题调取。",
       "caution": "历史案例里的具体结论不能默认成为本次前提；当前对话已有的历史上下文也需要区分。",
       "tune": "范围或品牌集变化改项目配置；分析单位与开工次序变化改流程。不要为一次个案不断增加全局规则。",
-      "implementation": "2.0：独立观察先于历史比较；acceptance_run.py 建立唯一目录并冻结输入。",
+      "implementation": "3.0：start 冻结输入与完整计划，scan 自动留下真实调用和结果页；独立候选先于历史判断。",
       "files": [
         [
           "SKILL.md",
@@ -149,7 +150,7 @@ const GUIDE = {
       "output": "输出可验收部分与明确的缺失清单。历史普通数值变化不是单独的“重述异常”。",
       "caution": "空结果不等于零销量；上次也缺失，不代表本次可以把缺失当成正常。",
       "tune": "先区分有效范围变动、未到货和真实缺失，再修状态对比。指纹用于侦察，不代替质量判断。",
-      "implementation": "2.0：国家/月 SPU 指纹；不覆盖全局旧基线，缺失依据来自有效范围。",
+      "implementation": "3.0：国家/月双源指纹及到货义务固定执行；收尾再次查询；有效范围独立留存。",
       "files": [
         [
           "00_fingerprint.sql",
@@ -174,7 +175,7 @@ const GUIDE = {
       "output": "输出待解释的结果、实际扫描范围，以及哪项指标可能受影响。随后用贡献分解决定先查谁。",
       "caution": "with_dim 是公司消费视角的代理，不等于最终治理发布结果；标准类目零命中不能写“无异常”。",
       "tune": "漏候选先改扫描覆盖和统计粒度；误判原因改方法解释。不同国家不要被一个全局排行榜挤掉。",
-      "implementation": "2.0：20 的四项结果概览配合 50 的实际价带分布；保留首次月，不跨空月算环比。",
+      "implementation": "3.0：四层全历史结果与固定价带完整分页，自然月 -1 / -12 比较，缺期显式记无基线。",
       "files": [
         [
           "20_category_results.sql",
@@ -203,7 +204,7 @@ const GUIDE = {
       "output": "输出需要核验合理性的范围候选。即便金额很小、暂未映射到 std，重要范围遗漏也不能忽略。",
       "caution": "“始终没出现”需要范围依据；只用数据库出现过的集合，找不到从来没采到的类目。",
       "tune": "更新应采范围和有效时间；修复首尾存在性检查及完整路径核对。Amazon 节点不清楚时可按需外证。",
-      "implementation": "2.0：月历与观测/预期路径交叉，识别首现、中缺、末端和全期未见；应采有效期仍需依据。",
+      "implementation": "3.0：观测路径与月历、已提供的约定前缀及有效期核对；缺完整契约时披露未知覆盖。",
       "files": [
         [
           "10_category_presence.sql",
@@ -232,7 +233,7 @@ const GUIDE = {
       "output": "输出优先核查的子集、贡献件数/金额、对父类目增长的百分点与其他结果影响；按影响决定下钻深度。",
       "caution": "贡献定位变化，不证明变化都是错误。候选筛选在父类目分母之后；不把重叠层级贡献重复相加。",
       "tune": "漏掉重要销量变化要查两条排序线；噪声过多要查四项影响与停止条件；不守恒要查聚合、连接和候选过滤。",
-      "implementation": "2.0：30 保留全状态与全量分母、两套贡献；40 按 SPU 金额组成观察头部。",
+      "implementation": "3.0：每个可比单元检查 SPU/品牌正负贡献、抵消和进出；下钻双期 SPU 全分页，旧头部不丢失。",
       "files": [
         [
           "30_change_contribution.sql",
@@ -262,7 +263,7 @@ const GUIDE = {
       "output": "输出当前最有依据的解释、反证和观测边界，以及源数据核验结果；按四项影响形成审计发现。",
       "caution": "示例不限定可探索的原因。渠道交易迁移与采集变化可以叠加；被采平台增长不能直接代表行业需求增长，也不能从一个合理故事推算精确影响倍数。",
       "tune": "漏掉新机制时检查问题与假设是否开放；归因过强时检查传导、反证与观测边界。微调推理方法，不不断追加事件分类。",
-      "implementation": "2.0 · 开放市场框架：从结果生成和修订假设，突发与渐进变化均可探索，示例按需展开。",
+      "implementation": "3.0 · 开放市场框架：从结果生成和修订假设，突发与渐进变化均可探索，示例按需展开。",
       "files": [
         [
           "60_mapping_coverage.sql",
@@ -295,7 +296,7 @@ const GUIDE = {
       "output": "输出每份证据支持、削弱或尚不能回答什么，以及当前假设、时序和观察范围的限制。",
       "caution": "外部变化存在、传导路径成立、具体幅度可解释需要不同证据。研究范围由当前问题决定，避免从平台观测直接外推全行业。",
       "tune": "按缺失的传导环节补证，主动寻找反例；调整或放弃证据不支持的假设，不以多查新闻数量证明完成。",
-      "implementation": "2.0 · 开放取证：来源随假设选择，支持与反证并看；商品/节点核验保持按需使用。",
+      "implementation": "3.0 · 开放取证：来源随假设选择，支持与反证并看；商品/节点核验保持按需使用。",
       "files": [
         [
           "cross-validation.md",
@@ -321,7 +322,7 @@ const GUIDE = {
       "output": "只交付一篇自足报告；关键数字就近支撑判断，复杂分支按需用文内 Mermaid，行动请求写在对应问题结尾。",
       "caution": "“其余正常”不能替代已检查环节；缺输入或未完成不能写成通过。章节形式灵活，完整路径不可省略。",
       "tune": "报告缺环节时核对实际观察与正文的对应关系；解释过头时回到证据边界。避免按工具数量或固定章节凑完整。",
-      "implementation": "2.1：单篇叙述、结论先行；正常一句带过，重点问题讲完整，默认无表格无图片，通读复验。",
+      "implementation": "3.0：正文结论分点，每个问题充分举证；执行看板提供覆盖、候选处置与查询轨迹。",
       "files": [
         [
           "report-writing.md",
@@ -350,7 +351,7 @@ const GUIDE = {
       "output": "输出一篇报告与独立证据包，只有用户另要反馈稿时才生成；不自动发送。仅试写时另存目录并注明没有重查数据库。",
       "caution": "seal 只检查文件与哈希，不判定报告完整或业务放行。换目录也不能清除会话中已读的旧判断。",
       "tune": "文件覆盖改运行命名；旧判断污染改加载顺序与事实来源；不要把每个历史案例都追加成开工必读。",
-      "implementation": "2.0：运行包冻结方法和配置，收尾复核上游取证一致性；seal 记录文件哈希并拒绝覆盖已封存包。",
+      "implementation": "3.0：独立验证器按冻结输入重建义务；执行状态、业务判断及封存分开，封存后拒绝覆盖。",
       "files": [
         [
           "SKILL.md",

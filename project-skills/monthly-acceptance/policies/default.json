@@ -1,0 +1,71 @@
+{
+  "version": "3.0.1",
+  "description": "初始排查政策；阈值用于召回和资源分配，不自动证明数据错误或放行。调整须生成新运行。",
+  "levels": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "comparisons": {
+    "mom": 1,
+    "yoy": 12
+  },
+  "price_bands": {
+    "cn": [
+      50,
+      100,
+      300,
+      500,
+      1000,
+      3000
+    ],
+    "US": [
+      10,
+      25,
+      50,
+      100,
+      200,
+      500
+    ],
+    "DE": [
+      10,
+      25,
+      50,
+      100,
+      200,
+      500
+    ],
+    "JP": [
+      1000,
+      3000,
+      5000,
+      10000,
+      30000,
+      50000
+    ]
+  },
+  "signals": {
+    "units_change": 0.3,
+    "amount_change": 0.3,
+    "spu_change": 0.3,
+    "band_share_pp": 10,
+    "gross_change_ratio": 0.5,
+    "cancellation_ratio": 0.7,
+    "churn_ratio": 0.4
+  },
+  "investigation": {
+    "head_share": 0.9,
+    "absolute_change_share": 0.8,
+    "high_change": 0.5,
+    "parent_exposure": 0.05
+  },
+  "page_size": 10000,
+  "timeout_seconds": 90,
+  "retry_count": 1,
+  "amount_tolerance": 0.01,
+  "sample_seed": "acceptance-v3",
+  "sample_per_category": 2,
+  "raw_table": "internal.flywheel.monthly_sales_wide_new",
+  "std_table": "internal.flywheel.monthly_sales_with_dim"
+}

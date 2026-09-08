@@ -1,94 +1,74 @@
 #!/usr/bin/env python3
-"""独立运行包：只管理文件，不查询数据、不裁决、不写全局指纹。"""
+"""Versioned acceptance execution, evidence, coverage and report CLI."""
 import argparse
-import hashlib
+import asyncio
+import fcntl
 import json
-import os
-import shutil
-import uuid
-from datetime import datetime
 from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[4]
-SKILL = ROOT / '.claude/skills/monthly-acceptance'
-BASE = Path(os.environ.get('ACCEPTANCE_DIR', str(ROOT / '验收'))).resolve()
-
-
-def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def write_json(path, data):
-    with path.open('x', encoding='utf-8') as out:
-        json.dump(data, out, ensure_ascii=False, indent=2)
-        out.write('\n')
-
-
-def start(month):
-    if len(month) != 7 or datetime.strptime(month, '%Y-%m').strftime('%Y-%m') != month:
-        raise ValueError('月份必须是 YYYY-MM')
-    if not (SKILL / 'SKILL.md').is_file():
-        raise ValueError('缺少 SKILL.md，不能冻结不完整的方法包')
-    now = datetime.now().astimezone()
-    run_id = now.strftime('%Y%m%dT%H%M%S%z') + '-' + uuid.uuid4().hex[:10]
-    sources = [p for p in SKILL.rglob('*') if p.is_file() and p.suffix in {'.md', '.sql', '.py'}]
-    sources += [BASE / 'config.yaml', BASE / '项目范围.md']
-    if any(not p.is_file() for p in sources):
-        raise ValueError('缺少 config.yaml 或 项目范围.md，先补全有效输入')
-    run = BASE / 'runs' / month / run_id
-    run.mkdir(parents=True, exist_ok=False)
-    (run / 'evidence').mkdir()
-    frozen = {}
-    for source in sorted(sources):
-        relative = Path('skill') / source.relative_to(SKILL) if source.is_relative_to(SKILL) else Path('project') / source.name
-        target = run / 'inputs' / relative
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, target)
-        frozen[str(target.relative_to(run))] = {'source': str(source), 'sha256': digest(target)}
-    write_json(run / 'run.json', {'run_id': run_id, 'data_month': month,
-               'created_at': now.isoformat(), 'method_version': '2.1', 'inputs': frozen})
-    print(run)
-
-
-def seal(directory):
-    run = Path(directory).resolve()
-    if not run.is_relative_to(BASE / 'runs') or not (run / 'run.json').is_file():
-        raise ValueError('仅封存本验收目录 runs 下的运行包')
-    if (run / 'sealed.json').exists():
-        raise ValueError('已封存，不覆盖；补查请新建运行包')
-    manifest = json.loads((run / 'run.json').read_text())
-    for name in ['观察.md', '报告.md']:
-        if not (run / name).is_file() or not (run / name).read_text().strip():
-            raise ValueError(f'缺少非空 {name}')
-    evidence = [p for p in (run / 'evidence').rglob('*') if p.is_file() and p.stat().st_size]
-    if not evidence:
-        raise ValueError('evidence 缺少本次查询、范围及结果文件')
-    for name, source in manifest['inputs'].items():
-        path = (run / name).resolve()
-        if not path.is_relative_to(run / 'inputs') or digest(path) != source['sha256']:
-            raise ValueError(f'冻结输入被修改：{name}')
-    files = {}
-    for path in sorted(run.rglob('*')):
-        if path.is_symlink():
-            raise ValueError('运行包中不允许链接代替本次证据')
-        if path.is_file():
-            files[str(path.relative_to(run))] = digest(path)
-    write_json(run / 'sealed.json', {'run_id': manifest['run_id'],
-               'sealed_at': datetime.now().astimezone().isoformat(), 'sha256': files})
-    print(run / 'sealed.json')
+from acceptance_core import Run,create_run,read,write,digest
+from acceptance_queries import plan,drilldown
+from acceptance_transport import connect,scan,call,execute_job
+from acceptance_analysis import analyze
+from acceptance_validate import validate
+from acceptance_render import render
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    sub = parser.add_subparsers(dest='command', required=True)
-    sub.add_parser('start').add_argument('--month', required=True)
-    sub.add_parser('seal').add_argument('directory')
-    args = parser.parse_args()
-    try:
-        start(args.month) if args.command == 'start' else seal(args.directory)
-    except (ValueError, OSError, KeyError) as exc:
-        parser.exit(1, f'{exc}\n')
+    parser=argparse.ArgumentParser(description=__doc__)
+    sub=parser.add_subparsers(dest='command',required=True)
+    start=sub.add_parser('start');start.add_argument('--month',required=True);start.add_argument('--base',default='验收');start.add_argument('--related-run')
+    for name in ['scan','finish-scan','analyze','status','validate','render','seal','verify-seal']:
+        p=sub.add_parser(name);p.add_argument('run');p.add_argument('--mcp-config') if name in ['scan','finish-scan'] else None
+    p=sub.add_parser('query');p.add_argument('run');p.add_argument('--sql-file',required=True);p.add_argument('--label',required=True);p.add_argument('--mcp-config')
+    p=sub.add_parser('drill');p.add_argument('run');p.add_argument('--candidate-id',required=True);p.add_argument('--mcp-config')
+    p=sub.add_parser('record');p.add_argument('run');p.add_argument('--file',required=True)
+    p=sub.add_parser('attach');p.add_argument('run');p.add_argument('--file',required=True);p.add_argument('--kind',required=True);p.add_argument('--source',required=True)
+    args=parser.parse_args();skill=Path(__file__).resolve().parents[1]
+    if args.command=='start':
+        directory=create_run(args.base,skill,args.month,args.related_run);run=Run(directory);run.register_plan(plan(run.manifest));print(directory);return
+    run=Run(args.run)
+    with (run.path/'.lock').open('a') as lock:
+        try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:raise SystemExit('此运行正在执行另一个写操作。请等待；观察 events.jsonl 不需要锁。')
+        if args.command=='verify-seal':
+            sealed=read(run.path/'sealed.json');errors=[]
+            for path,sha in sealed['sha256'].items():
+                p=(run.path/path).resolve()
+                if not p.is_relative_to(run.path) or not p.exists() or digest(p.read_bytes())!=sha:errors.append(path)
+            print(json.dumps({'file_integrity':not errors,'changed_or_missing':errors,'execution_state':sealed['execution_state'],'business_verdict':sealed['business_verdict']},ensure_ascii=False,indent=2));return
+        run.writable()
+        if run.verify_inputs():raise SystemExit('冻结输入已变更')
+        if args.command=='scan':
+            jobs=plan(run.manifest);run.register_plan(jobs);asyncio.run(scan(run,jobs,args.mcp_config))
+        elif args.command=='finish-scan':
+            asyncio.run(scan(run,plan(run.manifest,True),args.mcp_config,force=True))
+        elif args.command=='analyze':print(json.dumps(analyze(run),ensure_ascii=False))
+        elif args.command in ['status','validate']:
+            v=validate(run,persist=args.command=='validate');print(json.dumps(v,ensure_ascii=False,indent=2))
+        elif args.command=='record':
+            value=read(args.file);decisions=value if isinstance(value,list) else [value]
+            print(json.dumps([run.decide(d) for d in decisions],ensure_ascii=False))
+        elif args.command=='attach':
+            p=Path(args.file);print(run.evidence({'content':p.read_text(),'original_filename':p.name,'original_sha256':digest(p.read_bytes())},kind=args.kind,source=args.source))
+        elif args.command=='query':
+            async def query():
+                async with connect(run,args.mcp_config) as session:
+                    eid,data=await call(run,session,Path(args.sql_file).read_text(),args.label)
+                    print(json.dumps({'evidence_id':eid,'rows':data['row_count'],'note':'自由查询结果仅为证据；不增加基础覆盖计数。截断风险须自行明确。'},ensure_ascii=False))
+            asyncio.run(query())
+        elif args.command=='drill':
+            c=next(c for c in read(run.path/'candidates.json') if c['candidate_id']==args.candidate_id)
+            if c['kind']!='result_change':raise ValueError('此候选需要按事实编写溯源查询，不能自动做 SPU 增减分解')
+            lag=run.policy['comparisons'][c['comparison']]
+            j={'job_id':'drill-'+c['candidate_id'],'family':'drill','site':c['site'],'candidate_id':c['candidate_id'],
+                'key_fields':['product_id'],'sql':drilldown(run.manifest,c['site'],c['path'],c['level'],c['month'],lag)}
+            write(run.path/'records'/(j['job_id']+'-plan.json'),j)
+            async def execute():
+                async with connect(run,args.mcp_config) as session:await execute_job(run,session,j)
+            asyncio.run(execute())
+        elif args.command=='render':render(run)
+        elif args.command=='seal':
+            v=validate(run);render(run);run.seal(v)
+            print(json.dumps({'sealed':True,'execution_state':v['execution_state'],'business_verdict':v['business_verdict']},ensure_ascii=False))
 
-
-if __name__ == '__main__':
-    main()
+if __name__=='__main__':main()
