@@ -46,7 +46,7 @@ def start(month):
         shutil.copy2(source, target)
         frozen[str(target.relative_to(run))] = {'source': str(source), 'sha256': digest(target)}
     write_json(run / 'run.json', {'run_id': run_id, 'data_month': month,
-               'created_at': now.isoformat(), 'method_version': '2.0', 'inputs': frozen})
+               'created_at': now.isoformat(), 'method_version': '2.1', 'inputs': frozen})
     print(run)
 
 
