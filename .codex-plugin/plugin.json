@@ -1,0 +1,29 @@
+{
+  "name": "flywheel-analytics",
+  "version": "0.2.9",
+  "description": "Flywheel 大盘数据分析插件（战略组）：受治理只读 MCP（12 工具，HTTP，方法论随 instructions 与响应警示送达）+ 自动路由 Skill。估算口径、月度、复现戳、单 SKU 轨迹。",
+  "author": {
+    "name": "chenyu"
+  },
+  "skills": "./skills/",
+  "mcpServers": {
+    "flywheel": {
+      "type": "http",
+      "url": "https://voc.ulanzi.com:28081/flywheel/mcp",
+      "bearer_token_env_var": "FLYWHEEL_MCP_TOKEN"
+    }
+  },
+  "interface": {
+    "displayName": "Flywheel 大盘分析",
+    "shortDescription": "受治理的市场趋势、份额、品牌与 SKU 分析",
+    "longDescription": "通过 Flywheel 只读 MCP 查询月度市场估算数据，分析趋势、份额、增长贡献、价格带、品牌格局与单 SKU 轨迹。所有可见数字由服务端计算，附带复现戳与口径警示。",
+    "developerName": "chenyu",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": [
+      "最近三个月大盘整体表现怎么样？",
+      "当前数据覆盖哪些平台、站点和月份？",
+      "Amazon US 最近完整月的品牌集中度如何？"
+    ]
+  }
+}

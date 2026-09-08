@@ -1,6 +1,6 @@
 # flywheel-analytics
 
-Claude Code 插件：用受治理的只读 MCP 做大盘市场分析——趋势、份额、增长与贡献、排名与变化榜、
+Codex / Claude Code 插件：用受治理的只读 MCP 做大盘市场分析——趋势、份额、增长与贡献、排名与变化榜、
 价格带、品牌集中度与单品牌多月序列、标准类目与平台原始类目导航、单 SKU 搜索与逐月轨迹。
 
 装好之后直接用自然语言提问即可，例如：
@@ -9,24 +9,37 @@ Claude Code 插件：用受治理的只读 MCP 做大盘市场分析——趋势
 > 2026-05 Amazon US 的品牌集中度如何，CR5 是多少？
 > 搜一下 Amazon US 卖得最好的三脚架，看它今年以来的价格走势。
 
-所有可见数字由服务端计算并携带复现戳（`release_id` + 参数回显）。聚合结果在同一 release、同一参数下
-永久可复现；SKU 明细只保留最近 3 个已发布 release 的在线切片，归档后会明确披露而不会伪装成无观察。
+所有可见数字由服务端计算并携带复现戳（`release_id` + 参数回显）。当前合法发布链上的 release 可按相同参数复现聚合结果；可绑定列表见 `flywheel_data_status`。
+晚到兄弟节点、冲突或失活可能使旧 release 不再可绑定。SKU 明细只保留发布链最近 3 个 release 的在线切片，归档后明确披露。
 
 ## 安装前准备
 
 | 依赖 | 说明 |
 |---|---|
-| Claude Code | 任意近期版本；桌面端 / CLI / IDE 插件均可 |
+| 客户端 | Codex 或 Claude Code，需支持插件；本次兼容性验证使用 Codex CLI 0.153.4、Claude Code 2.1.263 |
 | 访问令牌 | 环境变量 `FLYWHEEL_MCP_TOKEN`，向插件维护者申请 |
 | 网络 | 能访问 MCP 端点（默认 `https://voc.ulanzi.com:28081`） |
 
-先把令牌写进 shell 配置（以 zsh 为例），**新开一个终端**让它生效：
+在 shell 配置（如 `~/.zshrc`）中加入下面一行，替换令牌占位符，**新开一个终端**后从该终端启动客户端：
 
 ```bash
-echo 'export FLYWHEEL_MCP_TOKEN="你的令牌"' >> ~/.zshrc
+export FLYWHEEL_MCP_TOKEN="你的令牌"
 ```
 
-## 安装
+令牌只放在本机环境变量中，不写进插件、仓库或 `config.toml`。可以用
+`test -n "$FLYWHEEL_MCP_TOKEN" && echo "令牌已设置"` 检查当前终端是否设置了变量，不打印令牌。
+
+**桌面端 / IDE 注意**：从 Dock、开始菜单或 IDE 启动的进程不一定继承终端环境；只改 `.zshrc`
+并重启应用未必生效。macOS 可在已加载令牌的终端中执行以下命令，再完全退出并重新打开客户端：
+
+```bash
+launchctl setenv FLYWHEEL_MCP_TOKEN "$FLYWHEEL_MCP_TOKEN"
+```
+
+该设置需在注销或重启系统后重新执行。Windows 请把 `FLYWHEEL_MCP_TOKEN` 配为用户环境变量，
+并重启客户端及启动它的 IDE。CLI 用户直接从已设置变量的终端运行 `codex` 或 `claude`。
+
+## 安装：Claude Code
 
 在 Claude Code 会话里依次执行两条命令：
 
@@ -40,27 +53,94 @@ echo 'export FLYWHEEL_MCP_TOKEN="你的令牌"' >> ~/.zshrc
 
 按提示确认后重启 Claude Code。
 
-## 验证
+## 安装：Codex
+
+在终端执行：
+
+```bash
+codex plugin marketplace add ccchenhuohuo/flywheel-plugin
+codex plugin add flywheel-analytics@flywheel
+codex mcp get flywheel --json
+```
+
+输出的 `transport.bearer_token_env_var` 应为 `FLYWHEEL_MCP_TOKEN`，然后完全重启 Codex 并新建会话。
+插件内已声明认证，不需要另外添加同名的用户级 MCP。两端共享 Skill 和同一个服务端。
+
+### 已安装旧版的 Codex 用户
+
+先更新市场快照，再重新安装插件，让原生清单进入插件缓存：
+
+```bash
+codex plugin marketplace upgrade flywheel
+codex plugin add flywheel-analytics@flywheel
+```
+
+新版尚未发布或暂时无法升级时，可以用 Codex 官方 CLI 写入用户级认证配置：
+
+```bash
+codex mcp add flywheel \
+  --url https://voc.ulanzi.com:28081/flywheel/mcp \
+  --bearer-token-env-var FLYWHEEL_MCP_TOKEN
+```
+
+这会在 `~/.codex/config.toml`（自定义 `CODEX_HOME` 时在其目录下）创建或更新同名服务器，等价于：
+
+```toml
+[mcp_servers.flywheel]
+url = "https://voc.ulanzi.com:28081/flywheel/mcp"
+bearer_token_env_var = "FLYWHEEL_MCP_TOKEN"
+```
+
+如果之前给同名服务器设置过其他参数，先备份对应配置再执行。**不要修改插件缓存目录里的文件**，
+更新插件会覆盖它们。保存配置后完全重启 Codex 并新建会话。
+
+升级成功、确认缓存中已有 `.codex-plugin/plugin.json` 后，如果曾添加上述临时配置，执行
+`codex mcp remove flywheel` 移除用户级覆盖，再运行 `codex mcp get flywheel --json`，确认插件本身
+仍提供 `FLYWHEEL_MCP_TOKEN`。最后重启并做下面的端到端验证。
+
+## 验证（两端相同）
 
 ```
 /mcp
 ```
 
-看到 `flywheel` 处于 connected 即可。再问一句"数据是什么时候的？多久更新一次？"，
+看到 Flywheel 服务器处于 connected（Claude 插件可能显示为 `plugin:flywheel-analytics:flywheel`）。
+再问一句"数据是什么时候的？多久更新一次？"，
 能返回当前数据范围与水位月份就说明端到端通了。
 
-如果连接失败，依次检查：令牌是否拼错、终端是否重开过（旧终端读不到新环境变量）、
-能否访问上表里的端点。**插件不会用缓存或记忆中的数字兜底**——MCP 不可用时它会如实说明并停止。
+如果连接失败，依次检查：
+
+1. Codex 的 `codex mcp get flywheel --json` 是否包含正确的 `bearer_token_env_var`；为空时先升级插件
+   或使用上面的临时修复。
+2. **客户端进程**是否能读取 `FLYWHEEL_MCP_TOKEN`；当前终端有变量，不代表已启动的桌面应用也有。
+3. 令牌是否正确、能否访问上表里的端点。
+
+`codex mcp get` 只验证配置；`auth_status` 的 `Unknown` / `unsupported` 也不能单独证明令牌失效。
+以实际连接和 `flywheel_data_status` 调用成功为准。
+**插件不会用缓存或记忆中的数字兜底**——MCP 不可用时它会如实说明并停止。
 
 ## 更新与卸载
 
+Claude Code 更新：
+
 ```
 /plugin marketplace update flywheel
+/plugin update flywheel-analytics@flywheel
 ```
+
+Claude Code 卸载：
 
 ```
 /plugin uninstall flywheel-analytics@flywheel
 ```
+
+Codex 更新用上面的 `marketplace upgrade` + `plugin add`，卸载用：
+
+```bash
+codex plugin remove flywheel-analytics@flywheel
+```
+
+卸载插件不会删除手动添加的用户级 MCP；如果配置过临时修复，另执行 `codex mcp remove flywheel`。
 
 ## 能力边界
 
@@ -81,3 +161,24 @@ echo 'export FLYWHEEL_MCP_TOKEN="你的令牌"' >> ~/.zshrc
 
 本仓库是**插件分发子集**，只包含使用者安装所需的内容。三层架构（Doris 治理表 + 薄 MCP + 方法论文本层）、构建管线、断言与验收手册在内部仓库，
 不随插件分发。Skill 为薄路由：方法论细则经 MCP instructions 与响应警示送达。
+
+### 双客户端打包约定
+
+| 消费端 | 插件清单 | MCP 认证来源 |
+|---|---|---|
+| Claude Code | `.claude-plugin/plugin.json` | 根目录 `.mcp.json` 的 `headers.Authorization = "Bearer ${FLYWHEEL_MCP_TOKEN}"` |
+| Codex | `.codex-plugin/plugin.json` | 原生清单内联 `mcpServers.flywheel.bearer_token_env_var = "FLYWHEEL_MCP_TOKEN"` |
+
+Codex 清单内联声明完整的同名服务器，覆盖默认发现的 Claude MCP 条目，避免依赖 Claude `headers`
+字段的自动转换。根目录 `.mcp.json` 保留 Claude 格式；Skill 共用 `skills/strategic-analytics/`。
+现有 `.claude-plugin/marketplace.json` 已用两个 CLI 实测可安装，无需维护第二套市场目录。
+
+发布制品必须同时包含 `.claude-plugin/`、`.codex-plugin/`、`.mcp.json`、`skills/` 与本 README，
+注意打包时不要漏掉隐藏目录。两份 `plugin.json` 的名称和版本、两处 MCP 的 URL 与令牌变量必须一致。
+当前源码版本为 0.2.9；发布时同步更新两份清单，旧版缓存不会因只修改源码而自动刷新。
+
+配置依据：[Codex MCP 配置](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)、
+[Codex 插件构建](https://learn.chatgpt.com/docs/build-plugins)、
+[Claude Code 插件参考](https://code.claude.com/docs/en/plugins-reference)。
+OpenAI 的 [Claude 插件提交转换说明](https://developers.openai.com/plugins/guides/submit-claude-plugin)
+讲的是提交门户流程；本仓库的客户端兼容性以原生清单和实际 CLI 加载结果验证。
