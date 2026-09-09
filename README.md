@@ -1,5 +1,7 @@
 # flywheel-analytics
 
+当前版本：**0.2.10** · [正式发行版](https://github.com/ccchenhuohuo/flywheel-plugin/releases/tag/v0.2.10) · [更新记录](CHANGELOG.md)
+
 Codex / Claude Code 插件：用受治理的只读 MCP 做大盘市场分析——趋势、份额、增长与贡献、排名与变化榜、
 价格带、品牌集中度与单品牌多月序列、标准类目与平台原始类目导航、单 SKU 搜索与逐月轨迹。
 
@@ -190,6 +192,9 @@ Codex 清单内联声明完整的同名服务器，覆盖默认发现的 Claude 
 发布制品必须同时包含 `.claude-plugin/`、`.codex-plugin/`、`.mcp.json`、`skills/` 与本 README，
 注意打包时不要漏掉隐藏目录。两份 `plugin.json` 的名称和版本、两处 MCP 的 URL 与令牌变量必须一致。
 当前源码版本为 0.2.10；发布时同步更新两份清单，旧版缓存不会因只修改源码而自动刷新。
+
+每次发布同时更新 README 与 CHANGELOG，将版本标签绑定到实际分发提交，并创建同版本 GitHub Release。
+发布后核对默认分支、两份插件清单、标签和 Releases 的最新版本一致；本机重新安装后核对 Skill 与分发文件一致。
 
 配置依据：[Codex MCP 配置](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)、
 [Codex 插件构建](https://learn.chatgpt.com/docs/build-plugins)、
