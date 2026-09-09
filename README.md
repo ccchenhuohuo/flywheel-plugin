@@ -144,6 +144,27 @@ codex plugin remove flywheel-analytics@flywheel
 
 ## 能力边界
 
+<!-- BEGIN GENERATED CAPABILITIES -->
+
+| 用户问题 | 当前支持与处理路径 |
+|---|---|
+| 市场趋势、份额、增长、品牌、价格带、类目、SKU | 已支持，选择对应的受治理分析工具。 |
+| 更新到哪月、发布是否陈旧、历史结果能否复现 | `flywheel_data_status`：可用月份、上游状态、可绑定 release 与 SKU 切片在线状态。 |
+| 字段覆盖、未分类、检疫情况 | 使用分析响应的 `coverage_notes`、`caveats`；`data_status` 披露最新月部分字段空值率。仅限响应实际披露的月份与范围，全站点披露不能定位某类目或品牌，也不能证明采集完整。 |
+| SPU 数量或变化 | 当前分析 MCP 未提供 SPU 去重数量；销量、源行数、SKU 搜索候选数都不能替代。明确说明指标缺口，不反复尝试销量工具。 |
+| 漏采、采集完整性、异常验收 | 当前分析 MCP 不提供验收结论；字段覆盖与已有查询结果不足以判定漏采。 |
+
+SPU／验收问题先说明上述边界。仅当当前环境确有相关项目验收 Skill 且其声明支持该问题时，
+按其入口与前置条件处理；否则说明缺少可用验收入口，不编造安装路径。
+项目验收不是普通市场分析的前置条件。
+已有字段覆盖披露只能回答对应字段与范围，不能据此断言“没有漏采”或“验收通过”。
+项目验收按其自身口径输出，不作为本插件市场分析的替代数据源。
+需要启用项目验收时，可查阅分发仓库的 [项目 Skills 安装与配置说明](https://github.com/ccchenhuohuo/flywheel-plugin/blob/main/project-skills/README.md)。
+其中 `monthly-acceptance` 位于 `project-skills/monthly-acceptance`，需要项目配置与只读 Doris 接入；
+目录随仓库分发不表示当前项目已安装，普通分析无需安装它。
+
+<!-- END GENERATED CAPABILITIES -->
+
 - **月度粒度**，没有周/日；数据起点 2024-01，上界为当前水位（最大完整月，按次月 16 日交付边界判断），实际范围以 `flywheel_data_status` 返回为准。
 - 指标是**市场估算**：销量为估算件数、金额为价×量推导值，不是 GMV、实付或订单数。
 - 贡献与结构变化是**数学分解，不是因果**；插件不做预测，也不给进入/退出、定价、预算类经营建议。
@@ -160,7 +181,7 @@ codex plugin remove flywheel-analytics@flywheel
 ## 给维护者
 
 本仓库是**插件分发子集**，只包含使用者安装所需的内容。三层架构（Doris 治理表 + 薄 MCP + 方法论文本层）、构建管线、断言与验收手册在内部仓库，
-不随插件分发。Skill 为薄路由：方法论细则经 MCP instructions 与响应警示送达。
+不随插件分发。Skill 承载完整规则与能力路由；MCP instructions 保持简短，完整规则也可经 `flywheel_describe_semantics` 按需读取，具体查询附带响应警示。
 
 ### 双客户端打包约定
 
@@ -175,7 +196,7 @@ Codex 清单内联声明完整的同名服务器，覆盖默认发现的 Claude 
 
 发布制品必须同时包含 `.claude-plugin/`、`.codex-plugin/`、`.mcp.json`、`skills/` 与本 README，
 注意打包时不要漏掉隐藏目录。两份 `plugin.json` 的名称和版本、两处 MCP 的 URL 与令牌变量必须一致。
-当前源码版本为 0.2.9；发布时同步更新两份清单，旧版缓存不会因只修改源码而自动刷新。
+当前源码版本为 0.2.10；发布时同步更新两份清单，旧版缓存不会因只修改源码而自动刷新。
 
 配置依据：[Codex MCP 配置](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)、
 [Codex 插件构建](https://learn.chatgpt.com/docs/build-plugins)、
