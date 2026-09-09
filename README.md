@@ -159,9 +159,6 @@ SPU／验收问题先说明上述边界。仅当当前环境确有相关项目�
 项目验收不是普通市场分析的前置条件。
 已有字段覆盖披露只能回答对应字段与范围，不能据此断言“没有漏采”或“验收通过”。
 项目验收按其自身口径输出，不作为本插件市场分析的替代数据源。
-需要启用项目验收时，可查阅分发仓库的 [项目 Skills 安装与配置说明](https://github.com/ccchenhuohuo/flywheel-plugin/blob/main/project-skills/README.md)。
-其中 `monthly-acceptance` 位于 `project-skills/monthly-acceptance`，需要项目配置与只读 Doris 接入；
-目录随仓库分发不表示当前项目已安装，普通分析无需安装它。
 
 <!-- END GENERATED CAPABILITIES -->
 
@@ -173,10 +170,6 @@ SPU／验收问题先说明上述边界。仅当当前环境确有相关项目�
 - 价格带为政策固定分桶，不支持自定义；平台原始类目只到 L3；不接受任意 SQL。
 
 这些不是 bug，是治理约束。插件遇到越界请求会拒绝并给出合规的替代路径。
-
-## 项目级月度验收
-
-用于核验服务商数据可信度、采集范围和异常的 `monthly-acceptance` 现可按项目安装。它以 SPU 数量、价格带、销量和销售额为结果，按影响逐层追溯到源数据，并交付正常环节完整可见的报告。安装位置、项目配置和触发方式见 [项目 Skills](project-skills/README.md)。
 
 ## 给维护者
 

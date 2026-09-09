@@ -26,9 +26,6 @@ SPU／验收问题先说明上述边界。仅当当前环境确有相关项目�
 项目验收不是普通市场分析的前置条件。
 已有字段覆盖披露只能回答对应字段与范围，不能据此断言“没有漏采”或“验收通过”。
 项目验收按其自身口径输出，不作为本插件市场分析的替代数据源。
-需要启用项目验收时，可查阅分发仓库的 [项目 Skills 安装与配置说明](https://github.com/ccchenhuohuo/flywheel-plugin/blob/main/project-skills/README.md)。
-其中 `monthly-acceptance` 位于 `project-skills/monthly-acceptance`，需要项目配置与只读 Doris 接入；
-目录随仓库分发不表示当前项目已安装，普通分析无需安装它。
 
 品牌与价格带可按完整三级类目路径过滤，需给全父路径；标准类目名可能在不同父节点重复。
 未记录该粒度的旧 release 会明确报错，不得解读为无观察。
